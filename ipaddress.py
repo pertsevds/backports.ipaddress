@@ -12,7 +12,8 @@ __version__ = "1.0"
 
 
 import functools
-from cached_property import cached_property
+from typing import Any, Optional, Union
+from cached_property_backport import cached_property
 
 IPV4LENGTH = 32
 IPV6LENGTH = 128
@@ -2298,3 +2299,30 @@ class _IPv6Constants:
 
 
 IPv6Address._constants = _IPv6Constants
+
+IPNetwork = Union[IPv4Network, IPv6Network]
+IPAddress = Union[IPv4Address, IPv6Address]
+IPInterface = Union[IPv4Interface, IPv6Interface]
+
+
+def safe_ip_network(param: Any) -> Optional[IPNetwork]:
+    """Не вылететь в Exception при конвертации подсети"""
+    try:
+        return ip_network(param)
+    except ValueError:
+        return None
+
+
+def safe_ip_address(param: Any) -> Optional[IPAddress]:
+    """Не вылететь в Exception при конвертации IP адреса"""
+    try:
+        return ip_address(param)
+    except ValueError:
+        return None
+
+def safe_ip_interface(param: Any) -> Optional[IPInterface]:
+    """Не вылететь в Exception при конвертации IP интерфейса"""
+    try:
+        return ip_interface(param)
+    except ValueError:
+        return None
